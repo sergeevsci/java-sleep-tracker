@@ -16,6 +16,9 @@ public class SleepTrackerApp {
         // Сначала добавим все нужные функции в список
         functionsForAnalyze.add(new CountSleepSessionInPeriod());
         functionsForAnalyze.add(new MinDurationSession());
+        functionsForAnalyze.add(new MaxDurationSession());
+        functionsForAnalyze.add(new AverageDurationSession());
+        functionsForAnalyze.add(new BadQualityCountSession());
 
         // здесь инициируем чтение sleep_log.txt и запускаем аналитические функции
         SleepingReadingFile sRF = new SleepingReadingFile(NAME_FILE);  // здесь инициируем чтение sleep_log.txt
@@ -30,8 +33,8 @@ public class SleepTrackerApp {
 
             // Определяем тип для форматтера (по имени класса)
             String type = func.getClass().getSimpleName()
-                    .replace("Session", "")
-                    .replace("InPeriod", "");
+                    .replace("SleepSessionInPeriod", "")
+                    .replace("Session", "");
 
             // Форматируем и выводим
             System.out.println(SleepAnalysisResult.format(rawResult, type));
