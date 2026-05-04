@@ -7,10 +7,12 @@ public class BadQualityCountSession implements Function<List<SleepingSession>, L
 
     @Override
     public Long apply(List<SleepingSession> sessions) {
-        if (sessions == null) return 0L;
+        if (sessions == null) {
+            return 0L;
+        }
 
         return sessions.stream()
-                .filter(session -> "BAD".equalsIgnoreCase(session.getQuality())) // Фильтр по качеству
+                .filter(session -> "BAD".equalsIgnoreCase(session.getQuality()))
                 .count();
     }
 }

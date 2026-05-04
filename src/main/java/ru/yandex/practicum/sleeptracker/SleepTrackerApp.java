@@ -6,40 +6,29 @@ import java.util.function.Function;
 
 public class SleepTrackerApp {
 
-    static final private String NAME_FILE = "sleep_log.txt";
+    private static final String NAME_FILE = "sleep_log.txt";
 
-    private static ArrayList<Function> functionsForAnalyze = new ArrayList<>(); // Список аналитических функций, выполняем по очереди
-
+    private static final List<Function<List<SleepingSession>, ?>> functionsForAnalyze = new ArrayList<>();
 
     public static void main(String[] args) {
-
-        // Сначала добавим все нужные функции в список
         functionsForAnalyze.add(new CountSleepSessionInPeriod());
         functionsForAnalyze.add(new MinDurationSession());
         functionsForAnalyze.add(new MaxDurationSession());
         functionsForAnalyze.add(new AverageDurationSession());
         functionsForAnalyze.add(new BadQualityCountSession());
+        functionsForAnalyze.add(new SleeplessNightCountSession());
+        functionsForAnalyze.add(new UserChronotypeSession());
 
-        // здесь инициируем чтение sleep_log.txt и запускаем аналитические функции
-        SleepingReadingFile sRF = new SleepingReadingFile(NAME_FILE);  // здесь инициируем чтение sleep_log.txt
-        List<SleepingSession> allSessions = sRF.readFile();
-        //System.out.println(allSessions);
+        SleepingReadingFile sleepingReadingFile = new SleepingReadingFile(NAME_FILE);
+        List<SleepingSession> allSessions = sleepingReadingFile.readFile();
 
-
-        // Пройдемся по функциям и выполним
         functionsForAnalyze.forEach(func -> {
-            // Выполняем функцию
             Object rawResult = func.apply(allSessions);
-
-            // Определяем тип для форматтера (по имени класса)
             String type = func.getClass().getSimpleName()
                     .replace("SleepSessionInPeriod", "")
                     .replace("Session", "");
 
-            // Форматируем и выводим
             System.out.println(SleepAnalysisResult.format(rawResult, type));
         });
-
-
     }
 }

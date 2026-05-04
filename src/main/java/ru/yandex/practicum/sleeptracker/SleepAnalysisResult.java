@@ -1,10 +1,11 @@
 package ru.yandex.practicum.sleeptracker;
 
 public class SleepAnalysisResult {
-    // Класс получает результат работы функции и возвращает текст нормального вывода
 
     public static String format(Object result, String analysisType) {
-        if (result == null) return "Данные отсутствуют";
+        if (result == null) {
+            return "Данные отсутствуют";
+        }
 
         return switch (analysisType) {
             case "Count" -> "Общее количество сессий: " + result;
@@ -12,7 +13,11 @@ public class SleepAnalysisResult {
             case "MaxDuration" -> String.format("Самый долгий сон длился: %d мин. ", (Long) result);
             case "AverageDuration" -> String.format("Средняя продолжительность сна: %.1f мин. ", (Double) result);
             case "BadQualityCount" -> String.format("Количество «плохих» сессий сна: %d ", (Long) result);
-
+            case "SleeplessNightCount" -> String.format(
+                    "Количество бессонных ночей (00:00-06:00 без сна): %d",
+                    (Long) result
+            );
+            case "UserChronotype" -> String.format("Ваш хронотип: %s", result);
             default -> "Результат (" + analysisType + "): " + result;
         };
     }

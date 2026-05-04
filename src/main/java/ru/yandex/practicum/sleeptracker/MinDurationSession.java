@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 
-
 public class MinDurationSession implements Function<List<SleepingSession>, Long> {
 
     @Override

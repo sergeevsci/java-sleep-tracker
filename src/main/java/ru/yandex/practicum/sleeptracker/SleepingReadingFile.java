@@ -20,15 +20,12 @@ public class SleepingReadingFile {
     }
 
     public List<SleepingSession> readFile() {
-
-        // Получаем файл из ресурсов как поток данных
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
 
         if (inputStream == null) {
             throw new IllegalArgumentException("Файл не найден в resources: " + fileName);
         }
 
-        // Оборачиваем InputStream в BufferedReader -> Stream<String>
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             return reader.lines()
                     .map(line -> line.split(";"))

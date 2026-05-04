@@ -120,9 +120,137 @@ public class SleepTrackerAppTest {
         assertEquals(0L, result);
     }
 
+    @Test
+    void sleeplessNightCountSessionShouldReturnZeroForNullSessions() {
+        SleeplessNightCountSession sleeplessNightCountSession = new SleeplessNightCountSession();
+
+        Long result = sleeplessNightCountSession.apply(null);
+
+        assertEquals(0L, result);
+    }
+
+    @Test
+    void sleeplessNightCountSessionShouldReturnZeroWhenEachNightHasSleep() {
+        SleeplessNightCountSession sleeplessNightCountSession = new SleeplessNightCountSession();
+
+        Long result = sleeplessNightCountSession.apply(List.of(
+                session(2026, 5, 1, 23, 0, 2026, 5, 2, 7, 0, "GOOD"),
+                session(2026, 5, 2, 23, 30, 2026, 5, 3, 6, 30, "GOOD"),
+                session(2026, 5, 3, 22, 45, 2026, 5, 4, 5, 45, "NORMAL")
+        ));
+
+        assertEquals(0L, result);
+    }
+
+    @Test
+    void sleeplessNightCountSessionShouldCountNightWithoutSleepBetweenSessions() {
+        SleeplessNightCountSession sleeplessNightCountSession = new SleeplessNightCountSession();
+
+        Long result = sleeplessNightCountSession.apply(List.of(
+                session(2026, 5, 1, 23, 0, 2026, 5, 2, 7, 0, "GOOD"),
+                session(2026, 5, 3, 23, 0, 2026, 5, 4, 7, 0, "GOOD")
+        ));
+
+        assertEquals(1L, result);
+    }
+
+    @Test
+    void sleeplessNightCountSessionShouldIgnoreDaytimeSleep() {
+        SleeplessNightCountSession sleeplessNightCountSession = new SleeplessNightCountSession();
+
+        Long result = sleeplessNightCountSession.apply(List.of(
+                session(2026, 5, 1, 14, 0, 2026, 5, 1, 16, 0, "GOOD"),
+                session(2026, 5, 2, 13, 0, 2026, 5, 2, 15, 0, "GOOD")
+        ));
+
+        assertEquals(1L, result);
+    }
+
+    @Test
+    void sleeplessNightCountSessionShouldCountAcrossMonthBoundary() {
+        SleeplessNightCountSession sleeplessNightCountSession = new SleeplessNightCountSession();
+
+        Long result = sleeplessNightCountSession.apply(List.of(
+                session(2026, 5, 31, 23, 0, 2026, 6, 1, 7, 0, "GOOD"),
+                session(2026, 6, 2, 23, 0, 2026, 6, 3, 7, 0, "GOOD")
+        ));
+
+        assertEquals(1L, result);
+    }
+
+    @Test
+    void userChronotypeSessionShouldReturnUndefinedForEmptySessions() {
+        UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
+
+        String result = userChronotypeSession.apply(Collections.emptyList());
+
+        assertEquals("Не определен", result);
+    }
+
+    @Test
+    void userChronotypeSessionShouldClassifyOwlWhenOwlSessionsAreMajority() {
+        UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
+
+        String result = userChronotypeSession.apply(List.of(
+                session(2026, 5, 1, 23, 30, 2026, 5, 2, 9, 30, "GOOD"),
+                session(2026, 5, 2, 23, 45, 2026, 5, 3, 10, 0, "GOOD"),
+                session(2026, 5, 3, 21, 30, 2026, 5, 4, 6, 30, "GOOD")
+        ));
+
+        assertEquals("Сова", result);
+    }
+
+    @Test
+    void userChronotypeSessionShouldClassifyLarkWhenLarkSessionsAreMajority() {
+        UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
+
+        String result = userChronotypeSession.apply(List.of(
+                session(2026, 5, 1, 21, 30, 2026, 5, 2, 6, 30, "GOOD"),
+                session(2026, 5, 2, 21, 45, 2026, 5, 3, 6, 45, "GOOD"),
+                session(2026, 5, 3, 23, 30, 2026, 5, 4, 9, 30, "GOOD")
+        ));
+
+        assertEquals("Жаворонок", result);
+    }
+
+    @Test
+    void userChronotypeSessionShouldReturnPigeonForTieBetweenOwlsAndLarks() {
+        UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
+
+        String result = userChronotypeSession.apply(List.of(
+                session(2026, 5, 1, 23, 30, 2026, 5, 2, 9, 30, "GOOD"),
+                session(2026, 5, 2, 21, 30, 2026, 5, 3, 6, 30, "GOOD")
+        ));
+
+        assertEquals("Голубь", result);
+    }
+
+    @Test
+    void userChronotypeSessionShouldReturnPigeonForOnlyDaytimeSleep() {
+        UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
+
+        String result = userChronotypeSession.apply(List.of(
+                session(2026, 5, 1, 13, 0, 2026, 5, 1, 14, 0, "GOOD"),
+                session(2026, 5, 2, 15, 0, 2026, 5, 2, 16, 0, "GOOD")
+        ));
+
+        assertEquals("Голубь", result);
+    }
 
     private static SleepingSession session(int startMinute, int endMinute, String quality) {
         LocalDateTime baseTime = LocalDateTime.of(2026, 5, 1, 0, 0);
         return new SleepingSession(baseTime.plusMinutes(startMinute), baseTime.plusMinutes(endMinute), quality);
+    }
+
+    private static SleepingSession session(
+            int startYear, int startMonth, int startDay, int startHour, int startMinute,
+            int endYear, int endMonth, int endDay, int endHour, int endMinute,
+            String quality
+    ) {
+        return new SleepingSession(
+                LocalDateTime.of(startYear, startMonth, startDay, startHour, startMinute),
+                LocalDateTime.of(endYear, endMonth, endDay, endHour, endMinute),
+                quality
+        );
     }
 }
