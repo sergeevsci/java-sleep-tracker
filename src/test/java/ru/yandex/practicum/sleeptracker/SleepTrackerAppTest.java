@@ -226,12 +226,47 @@ public class SleepTrackerAppTest {
     }
 
     @Test
+    void userChronotypeSessionShouldClassifyAfterMidnightLateWakeAsOwl() {
+        UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
+
+        AnalysisResult<Chronotype> result = userChronotypeSession.apply(List.of(
+                session(2026, 5, 2, 1, 0, 2026, 5, 2, 10, 0, SleepQuality.GOOD)
+        ));
+
+        assertEquals(Chronotype.OWL, result.getResult());
+    }
+
+    @Test
+    void userChronotypeSessionShouldClassifyMonthBoundaryLateSleepAsOwl() {
+        UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
+
+        AnalysisResult<Chronotype> result = userChronotypeSession.apply(List.of(
+                session(2026, 5, 31, 23, 30, 2026, 6, 1, 9, 30, SleepQuality.GOOD)
+        ));
+
+        assertEquals(Chronotype.OWL, result.getResult());
+    }
+
+    @Test
     void userChronotypeSessionShouldReturnPigeonForTieBetweenOwlsAndLarks() {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
         AnalysisResult<Chronotype> result = userChronotypeSession.apply(List.of(
                 session(2026, 5, 1, 23, 30, 2026, 5, 2, 9, 30, SleepQuality.GOOD),
                 session(2026, 5, 2, 21, 30, 2026, 5, 3, 6, 30, SleepQuality.GOOD)
+        ));
+
+        assertEquals(Chronotype.PIGEON, result.getResult());
+    }
+
+    @Test
+    void userChronotypeSessionShouldReturnPigeonWhenAllChronotypesAreEqual() {
+        UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
+
+        AnalysisResult<Chronotype> result = userChronotypeSession.apply(List.of(
+                session(2026, 5, 1, 23, 30, 2026, 5, 2, 9, 30, SleepQuality.GOOD),
+                session(2026, 5, 2, 21, 30, 2026, 5, 3, 6, 30, SleepQuality.GOOD),
+                session(2026, 5, 3, 22, 30, 2026, 5, 4, 7, 30, SleepQuality.GOOD)
         ));
 
         assertEquals(Chronotype.PIGEON, result.getResult());

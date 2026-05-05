@@ -31,7 +31,9 @@ public class UserChronotypeSession implements Function<List<SleepingSession>, An
                     LocalTime start = s.getStart().toLocalTime();
                     LocalTime end = s.getEnd().toLocalTime();
 
-                    if (start.isAfter(owlSleep) && end.isAfter(owlWake)) {
+                    boolean lateSleepStart = start.isAfter(owlSleep) || start.isBefore(nightEnd);
+
+                    if (lateSleepStart && end.isAfter(owlWake)) {
                         return Chronotype.OWL;
                     } else if (start.isBefore(larkSleep) && end.isBefore(larkWake)) {
                         return Chronotype.LARK;
