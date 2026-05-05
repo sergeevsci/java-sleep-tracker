@@ -1,5 +1,9 @@
 package ru.yandex.practicum.sleeptracker;
 
+import ru.yandex.practicum.sleeptracker.analysis.*;
+import ru.yandex.practicum.sleeptracker.io.SleepingReadingFile;
+import ru.yandex.practicum.sleeptracker.model.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;

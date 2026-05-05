@@ -1,6 +1,14 @@
 package ru.yandex.practicum.sleeptracker;
 
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.sleeptracker.analysis.AverageDurationSession;
+import ru.yandex.practicum.sleeptracker.analysis.BadQualityCountSession;
+import ru.yandex.practicum.sleeptracker.analysis.CountSleepSessionInPeriod;
+import ru.yandex.practicum.sleeptracker.analysis.MaxDurationSession;
+import ru.yandex.practicum.sleeptracker.analysis.MinDurationSession;
+import ru.yandex.practicum.sleeptracker.analysis.SleeplessNightCountSession;
+import ru.yandex.practicum.sleeptracker.analysis.UserChronotypeSession;
+import ru.yandex.practicum.sleeptracker.model.SleepingSession;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
