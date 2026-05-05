@@ -8,6 +8,7 @@ import ru.yandex.practicum.sleeptracker.analysis.MaxDurationSession;
 import ru.yandex.practicum.sleeptracker.analysis.MinDurationSession;
 import ru.yandex.practicum.sleeptracker.analysis.SleeplessNightCountSession;
 import ru.yandex.practicum.sleeptracker.analysis.UserChronotypeSession;
+import ru.yandex.practicum.sleeptracker.model.SleepQuality;
 import ru.yandex.practicum.sleeptracker.model.SleepingSession;
 
 import java.time.LocalDateTime;
@@ -23,9 +24,9 @@ public class SleepTrackerAppTest {
         CountSleepSessionInPeriod countSleepSessionInPeriod = new CountSleepSessionInPeriod();
 
         Integer result = countSleepSessionInPeriod.apply(List.of(
-                session(0, 60, "GOOD"),
-                session(120, 240, "BAD"),
-                session(300, 450, "NORMAL")
+                session(0, 60, SleepQuality.GOOD),
+                session(120, 240, SleepQuality.BAD),
+                session(300, 450, SleepQuality.NORMAL)
         ));
 
         assertEquals(3, result);
@@ -41,13 +42,13 @@ public class SleepTrackerAppTest {
     }
 
     @Test
-    void badQualityCountSessionShouldCountBadQualityIgnoringCase() {
+    void badQualityCountSessionShouldCountBadQuality() {
         BadQualityCountSession badQualityCountSession = new BadQualityCountSession();
 
         Long result = badQualityCountSession.apply(List.of(
-                session(0, 60, "BAD"),
-                session(120, 240, "bad"),
-                session(300, 450, "GOOD")
+                session(0, 60, SleepQuality.BAD),
+                session(120, 240, SleepQuality.BAD),
+                session(300, 450, SleepQuality.GOOD)
         ));
 
         assertEquals(2L, result);
@@ -67,9 +68,9 @@ public class SleepTrackerAppTest {
         AverageDurationSession averageDurationSession = new AverageDurationSession();
 
         Double result = averageDurationSession.apply(List.of(
-                session(0, 60, "GOOD"),
-                session(120, 240, "BAD"),
-                session(300, 480, "NORMAL")
+                session(0, 60, SleepQuality.GOOD),
+                session(120, 240, SleepQuality.BAD),
+                session(300, 480, SleepQuality.NORMAL)
         ));
 
         assertEquals(120.0, result, 0.001);
@@ -89,9 +90,9 @@ public class SleepTrackerAppTest {
         MaxDurationSession maxDurationSession = new MaxDurationSession();
 
         Long result = maxDurationSession.apply(List.of(
-                session(0, 60, "GOOD"),
-                session(120, 270, "BAD"),
-                session(300, 420, "NORMAL")
+                session(0, 60, SleepQuality.GOOD),
+                session(120, 270, SleepQuality.BAD),
+                session(300, 420, SleepQuality.NORMAL)
         ));
 
         assertEquals(150L, result);
@@ -111,9 +112,9 @@ public class SleepTrackerAppTest {
         MinDurationSession minDurationSession = new MinDurationSession();
 
         Long result = minDurationSession.apply(List.of(
-                session(0, 90, "GOOD"),
-                session(120, 180, "BAD"),
-                session(300, 420, "NORMAL")
+                session(0, 90, SleepQuality.GOOD),
+                session(120, 180, SleepQuality.BAD),
+                session(300, 420, SleepQuality.NORMAL)
         ));
 
         assertEquals(60L, result);
@@ -142,9 +143,9 @@ public class SleepTrackerAppTest {
         SleeplessNightCountSession sleeplessNightCountSession = new SleeplessNightCountSession();
 
         Long result = sleeplessNightCountSession.apply(List.of(
-                session(2026, 5, 1, 23, 0, 2026, 5, 2, 7, 0, "GOOD"),
-                session(2026, 5, 2, 23, 30, 2026, 5, 3, 6, 30, "GOOD"),
-                session(2026, 5, 3, 22, 45, 2026, 5, 4, 5, 45, "NORMAL")
+                session(2026, 5, 1, 23, 0, 2026, 5, 2, 7, 0, SleepQuality.GOOD),
+                session(2026, 5, 2, 23, 30, 2026, 5, 3, 6, 30, SleepQuality.GOOD),
+                session(2026, 5, 3, 22, 45, 2026, 5, 4, 5, 45, SleepQuality.NORMAL)
         ));
 
         assertEquals(0L, result);
@@ -155,8 +156,8 @@ public class SleepTrackerAppTest {
         SleeplessNightCountSession sleeplessNightCountSession = new SleeplessNightCountSession();
 
         Long result = sleeplessNightCountSession.apply(List.of(
-                session(2026, 5, 1, 23, 0, 2026, 5, 2, 7, 0, "GOOD"),
-                session(2026, 5, 3, 23, 0, 2026, 5, 4, 7, 0, "GOOD")
+                session(2026, 5, 1, 23, 0, 2026, 5, 2, 7, 0, SleepQuality.GOOD),
+                session(2026, 5, 3, 23, 0, 2026, 5, 4, 7, 0, SleepQuality.GOOD)
         ));
 
         assertEquals(1L, result);
@@ -167,8 +168,8 @@ public class SleepTrackerAppTest {
         SleeplessNightCountSession sleeplessNightCountSession = new SleeplessNightCountSession();
 
         Long result = sleeplessNightCountSession.apply(List.of(
-                session(2026, 5, 1, 14, 0, 2026, 5, 1, 16, 0, "GOOD"),
-                session(2026, 5, 2, 13, 0, 2026, 5, 2, 15, 0, "GOOD")
+                session(2026, 5, 1, 14, 0, 2026, 5, 1, 16, 0, SleepQuality.GOOD),
+                session(2026, 5, 2, 13, 0, 2026, 5, 2, 15, 0, SleepQuality.GOOD)
         ));
 
         assertEquals(1L, result);
@@ -179,8 +180,8 @@ public class SleepTrackerAppTest {
         SleeplessNightCountSession sleeplessNightCountSession = new SleeplessNightCountSession();
 
         Long result = sleeplessNightCountSession.apply(List.of(
-                session(2026, 5, 31, 23, 0, 2026, 6, 1, 7, 0, "GOOD"),
-                session(2026, 6, 2, 23, 0, 2026, 6, 3, 7, 0, "GOOD")
+                session(2026, 5, 31, 23, 0, 2026, 6, 1, 7, 0, SleepQuality.GOOD),
+                session(2026, 6, 2, 23, 0, 2026, 6, 3, 7, 0, SleepQuality.GOOD)
         ));
 
         assertEquals(1L, result);
@@ -200,9 +201,9 @@ public class SleepTrackerAppTest {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
         String result = userChronotypeSession.apply(List.of(
-                session(2026, 5, 1, 23, 30, 2026, 5, 2, 9, 30, "GOOD"),
-                session(2026, 5, 2, 23, 45, 2026, 5, 3, 10, 0, "GOOD"),
-                session(2026, 5, 3, 21, 30, 2026, 5, 4, 6, 30, "GOOD")
+                session(2026, 5, 1, 23, 30, 2026, 5, 2, 9, 30, SleepQuality.GOOD),
+                session(2026, 5, 2, 23, 45, 2026, 5, 3, 10, 0, SleepQuality.GOOD),
+                session(2026, 5, 3, 21, 30, 2026, 5, 4, 6, 30, SleepQuality.GOOD)
         ));
 
         assertEquals("Сова", result);
@@ -213,9 +214,9 @@ public class SleepTrackerAppTest {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
         String result = userChronotypeSession.apply(List.of(
-                session(2026, 5, 1, 21, 30, 2026, 5, 2, 6, 30, "GOOD"),
-                session(2026, 5, 2, 21, 45, 2026, 5, 3, 6, 45, "GOOD"),
-                session(2026, 5, 3, 23, 30, 2026, 5, 4, 9, 30, "GOOD")
+                session(2026, 5, 1, 21, 30, 2026, 5, 2, 6, 30, SleepQuality.GOOD),
+                session(2026, 5, 2, 21, 45, 2026, 5, 3, 6, 45, SleepQuality.GOOD),
+                session(2026, 5, 3, 23, 30, 2026, 5, 4, 9, 30, SleepQuality.GOOD)
         ));
 
         assertEquals("Жаворонок", result);
@@ -226,8 +227,8 @@ public class SleepTrackerAppTest {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
         String result = userChronotypeSession.apply(List.of(
-                session(2026, 5, 1, 23, 30, 2026, 5, 2, 9, 30, "GOOD"),
-                session(2026, 5, 2, 21, 30, 2026, 5, 3, 6, 30, "GOOD")
+                session(2026, 5, 1, 23, 30, 2026, 5, 2, 9, 30, SleepQuality.GOOD),
+                session(2026, 5, 2, 21, 30, 2026, 5, 3, 6, 30, SleepQuality.GOOD)
         ));
 
         assertEquals("Голубь", result);
@@ -238,14 +239,14 @@ public class SleepTrackerAppTest {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
         String result = userChronotypeSession.apply(List.of(
-                session(2026, 5, 1, 13, 0, 2026, 5, 1, 14, 0, "GOOD"),
-                session(2026, 5, 2, 15, 0, 2026, 5, 2, 16, 0, "GOOD")
+                session(2026, 5, 1, 13, 0, 2026, 5, 1, 14, 0, SleepQuality.GOOD),
+                session(2026, 5, 2, 15, 0, 2026, 5, 2, 16, 0, SleepQuality.GOOD)
         ));
 
         assertEquals("Голубь", result);
     }
 
-    private static SleepingSession session(int startMinute, int endMinute, String quality) {
+    private static SleepingSession session(int startMinute, int endMinute, SleepQuality quality) {
         LocalDateTime baseTime = LocalDateTime.of(2026, 5, 1, 0, 0);
         return new SleepingSession(baseTime.plusMinutes(startMinute), baseTime.plusMinutes(endMinute), quality);
     }
@@ -253,7 +254,7 @@ public class SleepTrackerAppTest {
     private static SleepingSession session(
             int startYear, int startMonth, int startDay, int startHour, int startMinute,
             int endYear, int endMonth, int endDay, int endHour, int endMinute,
-            String quality
+            SleepQuality quality
     ) {
         return new SleepingSession(
                 LocalDateTime.of(startYear, startMonth, startDay, startHour, startMinute),
