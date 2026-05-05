@@ -8,6 +8,7 @@ import ru.yandex.practicum.sleeptracker.analysis.MaxDurationSession;
 import ru.yandex.practicum.sleeptracker.analysis.MinDurationSession;
 import ru.yandex.practicum.sleeptracker.analysis.SleeplessNightCountSession;
 import ru.yandex.practicum.sleeptracker.analysis.UserChronotypeSession;
+import ru.yandex.practicum.sleeptracker.model.Chronotype;
 import ru.yandex.practicum.sleeptracker.model.SleepQuality;
 import ru.yandex.practicum.sleeptracker.model.SleepingSession;
 
@@ -191,59 +192,59 @@ public class SleepTrackerAppTest {
     void userChronotypeSessionShouldReturnUndefinedForEmptySessions() {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
-        String result = userChronotypeSession.apply(Collections.emptyList());
+        Chronotype result = userChronotypeSession.apply(Collections.emptyList());
 
-        assertEquals("Не определен", result);
+        assertEquals(Chronotype.UNDEFINED, result);
     }
 
     @Test
     void userChronotypeSessionShouldClassifyOwlWhenOwlSessionsAreMajority() {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
-        String result = userChronotypeSession.apply(List.of(
+        Chronotype result = userChronotypeSession.apply(List.of(
                 session(2026, 5, 1, 23, 30, 2026, 5, 2, 9, 30, SleepQuality.GOOD),
                 session(2026, 5, 2, 23, 45, 2026, 5, 3, 10, 0, SleepQuality.GOOD),
                 session(2026, 5, 3, 21, 30, 2026, 5, 4, 6, 30, SleepQuality.GOOD)
         ));
 
-        assertEquals("Сова", result);
+        assertEquals(Chronotype.OWL, result);
     }
 
     @Test
     void userChronotypeSessionShouldClassifyLarkWhenLarkSessionsAreMajority() {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
-        String result = userChronotypeSession.apply(List.of(
+        Chronotype result = userChronotypeSession.apply(List.of(
                 session(2026, 5, 1, 21, 30, 2026, 5, 2, 6, 30, SleepQuality.GOOD),
                 session(2026, 5, 2, 21, 45, 2026, 5, 3, 6, 45, SleepQuality.GOOD),
                 session(2026, 5, 3, 23, 30, 2026, 5, 4, 9, 30, SleepQuality.GOOD)
         ));
 
-        assertEquals("Жаворонок", result);
+        assertEquals(Chronotype.LARK, result);
     }
 
     @Test
     void userChronotypeSessionShouldReturnPigeonForTieBetweenOwlsAndLarks() {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
-        String result = userChronotypeSession.apply(List.of(
+        Chronotype result = userChronotypeSession.apply(List.of(
                 session(2026, 5, 1, 23, 30, 2026, 5, 2, 9, 30, SleepQuality.GOOD),
                 session(2026, 5, 2, 21, 30, 2026, 5, 3, 6, 30, SleepQuality.GOOD)
         ));
 
-        assertEquals("Голубь", result);
+        assertEquals(Chronotype.PIGEON, result);
     }
 
     @Test
     void userChronotypeSessionShouldReturnPigeonForOnlyDaytimeSleep() {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
-        String result = userChronotypeSession.apply(List.of(
+        Chronotype result = userChronotypeSession.apply(List.of(
                 session(2026, 5, 1, 13, 0, 2026, 5, 1, 14, 0, SleepQuality.GOOD),
                 session(2026, 5, 2, 15, 0, 2026, 5, 2, 16, 0, SleepQuality.GOOD)
         ));
 
-        assertEquals("Голубь", result);
+        assertEquals(Chronotype.PIGEON, result);
     }
 
     private static SleepingSession session(int startMinute, int endMinute, SleepQuality quality) {

@@ -17,7 +17,7 @@ public class SleepAnalysisResult {
                     "Количество бессонных ночей (00:00-06:00 без сна): %d",
                     (Long) result
             );
-            case "UserChronotype" -> String.format("Ваш хронотип: %s", result);
+            case "UserChronotype" -> String.format("Ваш хронотип: %s", ((Chronotype) result).getDisplayName());
             default -> "Результат (" + analysisType + "): " + result;
         };
     }
