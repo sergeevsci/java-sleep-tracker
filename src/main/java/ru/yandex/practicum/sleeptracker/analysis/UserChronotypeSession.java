@@ -1,5 +1,6 @@
 package ru.yandex.practicum.sleeptracker.analysis;
 
+import ru.yandex.practicum.sleeptracker.model.AnalysisResult;
 import ru.yandex.practicum.sleeptracker.model.Chronotype;
 import ru.yandex.practicum.sleeptracker.model.SleepingSession;
 
@@ -9,12 +10,12 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class UserChronotypeSession implements Function<List<SleepingSession>, Chronotype> {
+public class UserChronotypeSession implements Function<List<SleepingSession>, AnalysisResult<Chronotype>> {
 
     @Override
-    public Chronotype apply(List<SleepingSession> sessions) {
+    public AnalysisResult<Chronotype> apply(List<SleepingSession> sessions) {
         if (sessions == null || sessions.isEmpty()) {
-            return Chronotype.UNDEFINED;
+            return new AnalysisResult<>("Ваш хронотип", Chronotype.UNDEFINED);
         }
 
         LocalTime owlSleep = LocalTime.of(23, 0);
@@ -45,9 +46,9 @@ public class UserChronotypeSession implements Function<List<SleepingSession>, Ch
         long pigeons = counts.getOrDefault(Chronotype.PIGEON, 0L);
 
         if ((pigeons >= owls && pigeons >= larks) || owls == larks) {
-            return Chronotype.PIGEON;
+            return new AnalysisResult<>("Ваш хронотип", Chronotype.PIGEON);
         }
 
-        return owls > larks ? Chronotype.OWL : Chronotype.LARK;
+        return new AnalysisResult<>("Ваш хронотип", owls > larks ? Chronotype.OWL : Chronotype.LARK);
     }
 }

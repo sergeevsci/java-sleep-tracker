@@ -8,6 +8,7 @@ import ru.yandex.practicum.sleeptracker.analysis.MaxDurationSession;
 import ru.yandex.practicum.sleeptracker.analysis.MinDurationSession;
 import ru.yandex.practicum.sleeptracker.analysis.SleeplessNightCountSession;
 import ru.yandex.practicum.sleeptracker.analysis.UserChronotypeSession;
+import ru.yandex.practicum.sleeptracker.model.AnalysisResult;
 import ru.yandex.practicum.sleeptracker.model.Chronotype;
 import ru.yandex.practicum.sleeptracker.model.SleepQuality;
 import ru.yandex.practicum.sleeptracker.model.SleepingSession;
@@ -24,227 +25,228 @@ public class SleepTrackerAppTest {
     void countSleepSessionInPeriodShouldReturnSessionsCount() {
         CountSleepSessionInPeriod countSleepSessionInPeriod = new CountSleepSessionInPeriod();
 
-        Integer result = countSleepSessionInPeriod.apply(List.of(
+        AnalysisResult<Integer> result = countSleepSessionInPeriod.apply(List.of(
                 session(0, 60, SleepQuality.GOOD),
                 session(120, 240, SleepQuality.BAD),
                 session(300, 450, SleepQuality.NORMAL)
         ));
 
-        assertEquals(3, result);
+        assertEquals("Общее количество сессий", result.getDescription());
+        assertEquals(3, result.getResult());
     }
 
     @Test
     void countSleepSessionInPeriodShouldReturnZeroForNullSessions() {
         CountSleepSessionInPeriod countSleepSessionInPeriod = new CountSleepSessionInPeriod();
 
-        Integer result = countSleepSessionInPeriod.apply(null);
+        AnalysisResult<Integer> result = countSleepSessionInPeriod.apply(null);
 
-        assertEquals(0, result);
+        assertEquals(0, result.getResult());
     }
 
     @Test
     void badQualityCountSessionShouldCountBadQuality() {
         BadQualityCountSession badQualityCountSession = new BadQualityCountSession();
 
-        Long result = badQualityCountSession.apply(List.of(
+        AnalysisResult<Long> result = badQualityCountSession.apply(List.of(
                 session(0, 60, SleepQuality.BAD),
                 session(120, 240, SleepQuality.BAD),
                 session(300, 450, SleepQuality.GOOD)
         ));
 
-        assertEquals(2L, result);
+        assertEquals(2L, result.getResult());
     }
 
     @Test
     void badQualityCountSessionShouldReturnZeroForNullSessions() {
         BadQualityCountSession badQualityCountSession = new BadQualityCountSession();
 
-        Long result = badQualityCountSession.apply(null);
+        AnalysisResult<Long> result = badQualityCountSession.apply(null);
 
-        assertEquals(0L, result);
+        assertEquals(0L, result.getResult());
     }
 
     @Test
     void averageDurationSessionShouldReturnAverageDurationInMinutes() {
         AverageDurationSession averageDurationSession = new AverageDurationSession();
 
-        Double result = averageDurationSession.apply(List.of(
+        AnalysisResult<Double> result = averageDurationSession.apply(List.of(
                 session(0, 60, SleepQuality.GOOD),
                 session(120, 240, SleepQuality.BAD),
                 session(300, 480, SleepQuality.NORMAL)
         ));
 
-        assertEquals(120.0, result, 0.001);
+        assertEquals(120.0, result.getResult(), 0.001);
     }
 
     @Test
     void averageDurationSessionShouldReturnZeroForEmptySessions() {
         AverageDurationSession averageDurationSession = new AverageDurationSession();
 
-        Double result = averageDurationSession.apply(Collections.emptyList());
+        AnalysisResult<Double> result = averageDurationSession.apply(Collections.emptyList());
 
-        assertEquals(0.0, result, 0.001);
+        assertEquals(0.0, result.getResult(), 0.001);
     }
 
     @Test
     void maxDurationSessionShouldReturnLongestDurationInMinutes() {
         MaxDurationSession maxDurationSession = new MaxDurationSession();
 
-        Long result = maxDurationSession.apply(List.of(
+        AnalysisResult<Long> result = maxDurationSession.apply(List.of(
                 session(0, 60, SleepQuality.GOOD),
                 session(120, 270, SleepQuality.BAD),
                 session(300, 420, SleepQuality.NORMAL)
         ));
 
-        assertEquals(150L, result);
+        assertEquals(150L, result.getResult());
     }
 
     @Test
     void maxDurationSessionShouldReturnZeroForEmptySessions() {
         MaxDurationSession maxDurationSession = new MaxDurationSession();
 
-        Long result = maxDurationSession.apply(Collections.emptyList());
+        AnalysisResult<Long> result = maxDurationSession.apply(Collections.emptyList());
 
-        assertEquals(0L, result);
+        assertEquals(0L, result.getResult());
     }
 
     @Test
     void minDurationSessionShouldReturnShortestDurationInMinutes() {
         MinDurationSession minDurationSession = new MinDurationSession();
 
-        Long result = minDurationSession.apply(List.of(
+        AnalysisResult<Long> result = minDurationSession.apply(List.of(
                 session(0, 90, SleepQuality.GOOD),
                 session(120, 180, SleepQuality.BAD),
                 session(300, 420, SleepQuality.NORMAL)
         ));
 
-        assertEquals(60L, result);
+        assertEquals(60L, result.getResult());
     }
 
     @Test
     void minDurationSessionShouldReturnZeroForEmptySessions() {
         MinDurationSession minDurationSession = new MinDurationSession();
 
-        Long result = minDurationSession.apply(Collections.emptyList());
+        AnalysisResult<Long> result = minDurationSession.apply(Collections.emptyList());
 
-        assertEquals(0L, result);
+        assertEquals(0L, result.getResult());
     }
 
     @Test
     void sleeplessNightCountSessionShouldReturnZeroForNullSessions() {
         SleeplessNightCountSession sleeplessNightCountSession = new SleeplessNightCountSession();
 
-        Long result = sleeplessNightCountSession.apply(null);
+        AnalysisResult<Long> result = sleeplessNightCountSession.apply(null);
 
-        assertEquals(0L, result);
+        assertEquals(0L, result.getResult());
     }
 
     @Test
     void sleeplessNightCountSessionShouldReturnZeroWhenEachNightHasSleep() {
         SleeplessNightCountSession sleeplessNightCountSession = new SleeplessNightCountSession();
 
-        Long result = sleeplessNightCountSession.apply(List.of(
+        AnalysisResult<Long> result = sleeplessNightCountSession.apply(List.of(
                 session(2026, 5, 1, 23, 0, 2026, 5, 2, 7, 0, SleepQuality.GOOD),
                 session(2026, 5, 2, 23, 30, 2026, 5, 3, 6, 30, SleepQuality.GOOD),
                 session(2026, 5, 3, 22, 45, 2026, 5, 4, 5, 45, SleepQuality.NORMAL)
         ));
 
-        assertEquals(0L, result);
+        assertEquals(0L, result.getResult());
     }
 
     @Test
     void sleeplessNightCountSessionShouldCountNightWithoutSleepBetweenSessions() {
         SleeplessNightCountSession sleeplessNightCountSession = new SleeplessNightCountSession();
 
-        Long result = sleeplessNightCountSession.apply(List.of(
+        AnalysisResult<Long> result = sleeplessNightCountSession.apply(List.of(
                 session(2026, 5, 1, 23, 0, 2026, 5, 2, 7, 0, SleepQuality.GOOD),
                 session(2026, 5, 3, 23, 0, 2026, 5, 4, 7, 0, SleepQuality.GOOD)
         ));
 
-        assertEquals(1L, result);
+        assertEquals(1L, result.getResult());
     }
 
     @Test
     void sleeplessNightCountSessionShouldIgnoreDaytimeSleep() {
         SleeplessNightCountSession sleeplessNightCountSession = new SleeplessNightCountSession();
 
-        Long result = sleeplessNightCountSession.apply(List.of(
+        AnalysisResult<Long> result = sleeplessNightCountSession.apply(List.of(
                 session(2026, 5, 1, 14, 0, 2026, 5, 1, 16, 0, SleepQuality.GOOD),
                 session(2026, 5, 2, 13, 0, 2026, 5, 2, 15, 0, SleepQuality.GOOD)
         ));
 
-        assertEquals(1L, result);
+        assertEquals(1L, result.getResult());
     }
 
     @Test
     void sleeplessNightCountSessionShouldCountAcrossMonthBoundary() {
         SleeplessNightCountSession sleeplessNightCountSession = new SleeplessNightCountSession();
 
-        Long result = sleeplessNightCountSession.apply(List.of(
+        AnalysisResult<Long> result = sleeplessNightCountSession.apply(List.of(
                 session(2026, 5, 31, 23, 0, 2026, 6, 1, 7, 0, SleepQuality.GOOD),
                 session(2026, 6, 2, 23, 0, 2026, 6, 3, 7, 0, SleepQuality.GOOD)
         ));
 
-        assertEquals(1L, result);
+        assertEquals(1L, result.getResult());
     }
 
     @Test
     void userChronotypeSessionShouldReturnUndefinedForEmptySessions() {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
-        Chronotype result = userChronotypeSession.apply(Collections.emptyList());
+        AnalysisResult<Chronotype> result = userChronotypeSession.apply(Collections.emptyList());
 
-        assertEquals(Chronotype.UNDEFINED, result);
+        assertEquals(Chronotype.UNDEFINED, result.getResult());
     }
 
     @Test
     void userChronotypeSessionShouldClassifyOwlWhenOwlSessionsAreMajority() {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
-        Chronotype result = userChronotypeSession.apply(List.of(
+        AnalysisResult<Chronotype> result = userChronotypeSession.apply(List.of(
                 session(2026, 5, 1, 23, 30, 2026, 5, 2, 9, 30, SleepQuality.GOOD),
                 session(2026, 5, 2, 23, 45, 2026, 5, 3, 10, 0, SleepQuality.GOOD),
                 session(2026, 5, 3, 21, 30, 2026, 5, 4, 6, 30, SleepQuality.GOOD)
         ));
 
-        assertEquals(Chronotype.OWL, result);
+        assertEquals(Chronotype.OWL, result.getResult());
     }
 
     @Test
     void userChronotypeSessionShouldClassifyLarkWhenLarkSessionsAreMajority() {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
-        Chronotype result = userChronotypeSession.apply(List.of(
+        AnalysisResult<Chronotype> result = userChronotypeSession.apply(List.of(
                 session(2026, 5, 1, 21, 30, 2026, 5, 2, 6, 30, SleepQuality.GOOD),
                 session(2026, 5, 2, 21, 45, 2026, 5, 3, 6, 45, SleepQuality.GOOD),
                 session(2026, 5, 3, 23, 30, 2026, 5, 4, 9, 30, SleepQuality.GOOD)
         ));
 
-        assertEquals(Chronotype.LARK, result);
+        assertEquals(Chronotype.LARK, result.getResult());
     }
 
     @Test
     void userChronotypeSessionShouldReturnPigeonForTieBetweenOwlsAndLarks() {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
-        Chronotype result = userChronotypeSession.apply(List.of(
+        AnalysisResult<Chronotype> result = userChronotypeSession.apply(List.of(
                 session(2026, 5, 1, 23, 30, 2026, 5, 2, 9, 30, SleepQuality.GOOD),
                 session(2026, 5, 2, 21, 30, 2026, 5, 3, 6, 30, SleepQuality.GOOD)
         ));
 
-        assertEquals(Chronotype.PIGEON, result);
+        assertEquals(Chronotype.PIGEON, result.getResult());
     }
 
     @Test
     void userChronotypeSessionShouldReturnPigeonForOnlyDaytimeSleep() {
         UserChronotypeSession userChronotypeSession = new UserChronotypeSession();
 
-        Chronotype result = userChronotypeSession.apply(List.of(
+        AnalysisResult<Chronotype> result = userChronotypeSession.apply(List.of(
                 session(2026, 5, 1, 13, 0, 2026, 5, 1, 14, 0, SleepQuality.GOOD),
                 session(2026, 5, 2, 15, 0, 2026, 5, 2, 16, 0, SleepQuality.GOOD)
         ));
 
-        assertEquals(Chronotype.PIGEON, result);
+        assertEquals(Chronotype.PIGEON, result.getResult());
     }
 
     private static SleepingSession session(int startMinute, int endMinute, SleepQuality quality) {

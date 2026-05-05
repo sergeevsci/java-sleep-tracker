@@ -2,23 +2,23 @@ package ru.yandex.practicum.sleeptracker.model;
 
 public class SleepAnalysisResult {
 
-    public static String format(Object result, String analysisType) {
-        if (result == null) {
+    public static String format(AnalysisResult<?> analysisResult) {
+        if (analysisResult == null || analysisResult.getResult() == null) {
             return "Данные отсутствуют";
         }
 
-        return switch (analysisType) {
-            case "Count" -> "Общее количество сессий: " + result;
-            case "MinDuration" -> "Минимальный сон: " + result + " мин.";
-            case "MaxDuration" -> String.format("Самый долгий сон длился: %d мин. ", (Long) result);
-            case "AverageDuration" -> String.format("Средняя продолжительность сна: %.1f мин. ", (Double) result);
-            case "BadQualityCount" -> String.format("Количество «плохих» сессий сна: %d ", (Long) result);
-            case "SleeplessNightCount" -> String.format(
-                    "Количество бессонных ночей (00:00-06:00 без сна): %d",
-                    (Long) result
-            );
-            case "UserChronotype" -> String.format("Ваш хронотип: %s", ((Chronotype) result).getDisplayName());
-            default -> "Результат (" + analysisType + "): " + result;
-        };
+        return analysisResult.getDescription() + ": " + formatValue(analysisResult.getResult());
+    }
+
+    private static String formatValue(Object result) {
+        if (result instanceof Chronotype chronotype) {
+            return chronotype.getDisplayName();
+        }
+
+        if (result instanceof Double doubleResult) {
+            return String.format("%.1f", doubleResult);
+        }
+
+        return result.toString();
     }
 }

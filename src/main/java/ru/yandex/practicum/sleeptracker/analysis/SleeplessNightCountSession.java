@@ -1,5 +1,6 @@
 package ru.yandex.practicum.sleeptracker.analysis;
 
+import ru.yandex.practicum.sleeptracker.model.AnalysisResult;
 import ru.yandex.practicum.sleeptracker.model.SleepingSession;
 
 import java.time.LocalDate;
@@ -10,12 +11,12 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class SleeplessNightCountSession implements Function<List<SleepingSession>, Long> {
+public class SleeplessNightCountSession implements Function<List<SleepingSession>, AnalysisResult<Long>> {
 
     @Override
-    public Long apply(List<SleepingSession> sessions) {
+    public AnalysisResult<Long> apply(List<SleepingSession> sessions) {
         if (sessions == null || sessions.isEmpty()) {
-            return 0L;
+            return new AnalysisResult<>("Количество бессонных ночей (00:00-06:00 без сна)", 0L);
         }
 
         LocalDate firstDate = sessions.getFirst().getStart().toLocalTime().isAfter(LocalTime.NOON)
@@ -37,6 +38,9 @@ public class SleeplessNightCountSession implements Function<List<SleepingSession
                 .collect(Collectors.toSet());
 
         long sleeplessNights = totalNights - nightsWithSleep.size();
-        return Math.max(0, sleeplessNights);
+        return new AnalysisResult<>(
+                "Количество бессонных ночей (00:00-06:00 без сна)",
+                Math.max(0, sleeplessNights)
+        );
     }
 }

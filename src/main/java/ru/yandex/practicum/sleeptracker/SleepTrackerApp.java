@@ -12,7 +12,7 @@ public class SleepTrackerApp {
 
     private static final String NAME_FILE = "sleep_log.txt";
 
-    private static final List<Function<List<SleepingSession>, ?>> functionsForAnalyze = new ArrayList<>();
+    private static final List<Function<List<SleepingSession>, ? extends AnalysisResult<?>>> functionsForAnalyze = new ArrayList<>();
 
     public static void main(String[] args) {
         functionsForAnalyze.add(new CountSleepSessionInPeriod());
@@ -27,12 +27,8 @@ public class SleepTrackerApp {
         List<SleepingSession> allSessions = sleepingReadingFile.readFile();
 
         functionsForAnalyze.forEach(func -> {
-            Object rawResult = func.apply(allSessions);
-            String type = func.getClass().getSimpleName()
-                    .replace("SleepSessionInPeriod", "")
-                    .replace("Session", "");
-
-            System.out.println(SleepAnalysisResult.format(rawResult, type));
+            AnalysisResult<?> analysisResult = func.apply(allSessions);
+            System.out.println(SleepAnalysisResult.format(analysisResult));
         });
     }
 }
