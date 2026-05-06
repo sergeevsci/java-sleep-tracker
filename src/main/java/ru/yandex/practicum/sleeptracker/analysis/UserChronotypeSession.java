@@ -15,7 +15,7 @@ public class UserChronotypeSession implements Function<List<SleepingSession>, An
     @Override
     public AnalysisResult<Chronotype> apply(List<SleepingSession> sessions) {
         if (sessions == null || sessions.isEmpty()) {
-            return new AnalysisResult<>("Ваш хронотип", Chronotype.UNDEFINED);
+            return new AnalysisResult<>(AnalysisConstants.CHRONOTYPE_TITLE, Chronotype.UNDEFINED);
         }
 
         LocalTime owlSleep = LocalTime.of(23, 0);
@@ -25,8 +25,15 @@ public class UserChronotypeSession implements Function<List<SleepingSession>, An
         LocalTime nightEnd = LocalTime.of(6, 0);
 
         Map<Chronotype, Long> counts = sessions.stream()
-                .filter(s -> s.getStart().toLocalTime().isBefore(nightEnd)
-                        || s.getEnd().toLocalDate().isAfter(s.getStart().toLocalDate()))
+                .filter(s -> {
+                    LocalTime start = s.getStart().toLocalTime();
+                    LocalTime end = s.getEnd().toLocalTime();
+                    boolean spansDays = s.getEnd().toLocalDate().isAfter(s.getStart().toLocalDate());
+                    // Сессия ночная, если началась до 06:00,
+                    // закончилась после 00:00 (при условии, что это переходящая на другой день сессия или просто поздняя)
+                    // длится через полночь
+                    return start.isBefore(nightEnd) || spansDays || end.isAfter(LocalTime.MIDNIGHT);
+                })
                 .map(s -> {
                     LocalTime start = s.getStart().toLocalTime();
                     LocalTime end = s.getEnd().toLocalTime();
@@ -48,9 +55,9 @@ public class UserChronotypeSession implements Function<List<SleepingSession>, An
         long pigeons = counts.getOrDefault(Chronotype.PIGEON, 0L);
 
         if ((pigeons >= owls && pigeons >= larks) || owls == larks) {
-            return new AnalysisResult<>("Ваш хронотип", Chronotype.PIGEON);
+            return new AnalysisResult<>(AnalysisConstants.CHRONOTYPE_TITLE, Chronotype.PIGEON);
         }
 
-        return new AnalysisResult<>("Ваш хронотип", owls > larks ? Chronotype.OWL : Chronotype.LARK);
+        return new AnalysisResult<>(AnalysisConstants.CHRONOTYPE_TITLE, owls > larks ? Chronotype.OWL : Chronotype.LARK);
     }
 }

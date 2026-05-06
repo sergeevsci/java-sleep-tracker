@@ -11,9 +11,9 @@ public class CountSleepSessionInPeriod implements Function<List<SleepingSession>
     @Override
     public AnalysisResult<Integer> apply(List<SleepingSession> sessions) {
         if (sessions == null) {
-            return new AnalysisResult<>("Общее количество сессий", 0);
+            return new AnalysisResult<>(AnalysisConstants.TOTAL_SESSIONS_TITLE, 0);
         }
 
-        return new AnalysisResult<>("Общее количество сессий", sessions.size());
+        return new AnalysisResult<>(AnalysisConstants.TOTAL_SESSIONS_TITLE, sessions.size());
     }
 }

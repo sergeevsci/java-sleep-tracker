@@ -12,13 +12,13 @@ public class BadQualityCountSession implements Function<List<SleepingSession>, A
     @Override
     public AnalysisResult<Long> apply(List<SleepingSession> sessions) {
         if (sessions == null) {
-            return new AnalysisResult<>("Количество плохих сессий сна", 0L);
+            return new AnalysisResult<>(AnalysisConstants.BAD_QUALITY_TITLE, 0L);
         }
 
         long badQualityCount = sessions.stream()
                 .filter(session -> session.getQuality() == SleepQuality.BAD)
                 .count();
 
-        return new AnalysisResult<>("Количество плохих сессий сна", badQualityCount);
+        return new AnalysisResult<>(AnalysisConstants.BAD_QUALITY_TITLE, badQualityCount);
     }
 }

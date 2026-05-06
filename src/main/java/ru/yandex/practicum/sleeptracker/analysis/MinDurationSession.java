@@ -11,8 +11,8 @@ public class MinDurationSession implements Function<List<SleepingSession>, Analy
 
     @Override
     public AnalysisResult<Long> apply(List<SleepingSession> sessions) {
-        if (sessions == null || sessions.isEmpty()) {
-            return new AnalysisResult<>("Минимальный сон, мин.", 0L);
+        if (sessions == null) {
+            return new AnalysisResult<>(AnalysisConstants.MIN_DURATION_TITLE, 0L);
         }
 
         long minDuration = sessions.stream()
@@ -22,6 +22,6 @@ public class MinDurationSession implements Function<List<SleepingSession>, Analy
                 .min()
                 .orElse(0L);
 
-        return new AnalysisResult<>("Минимальный сон, мин.", minDuration);
+        return new AnalysisResult<>(AnalysisConstants.MIN_DURATION_TITLE, minDuration);
     }
 }

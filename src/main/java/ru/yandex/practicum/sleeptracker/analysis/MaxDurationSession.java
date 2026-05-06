@@ -11,8 +11,8 @@ public class MaxDurationSession implements Function<List<SleepingSession>, Analy
 
     @Override
     public AnalysisResult<Long> apply(List<SleepingSession> sessions) {
-        if (sessions == null || sessions.isEmpty()) {
-            return new AnalysisResult<>("Самый долгий сон, мин.", 0L);
+        if (sessions == null) {
+            return new AnalysisResult<>(AnalysisConstants.MAX_DURATION_TITLE, 0L);
         }
 
         long maxDuration = sessions.stream()
@@ -22,6 +22,6 @@ public class MaxDurationSession implements Function<List<SleepingSession>, Analy
                 .max()
                 .orElse(0L);
 
-        return new AnalysisResult<>("Самый долгий сон, мин.", maxDuration);
+        return new AnalysisResult<>(AnalysisConstants.MAX_DURATION_TITLE, maxDuration);
     }
 }

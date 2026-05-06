@@ -11,8 +11,8 @@ public class AverageDurationSession implements Function<List<SleepingSession>, A
 
     @Override
     public AnalysisResult<Double> apply(List<SleepingSession> sessions) {
-        if (sessions == null || sessions.isEmpty()) {
-            return new AnalysisResult<>("Средняя продолжительность сна, мин.", 0.0);
+        if (sessions == null) {
+            return new AnalysisResult<>(AnalysisConstants.AVG_DURATION_TITLE, 0.0);
         }
 
         double averageDuration = sessions.stream()
@@ -22,6 +22,6 @@ public class AverageDurationSession implements Function<List<SleepingSession>, A
                 .average()
                 .orElse(0.0);
 
-        return new AnalysisResult<>("Средняя продолжительность сна, мин.", averageDuration);
+        return new AnalysisResult<>(AnalysisConstants.AVG_DURATION_TITLE, averageDuration);
     }
 }
