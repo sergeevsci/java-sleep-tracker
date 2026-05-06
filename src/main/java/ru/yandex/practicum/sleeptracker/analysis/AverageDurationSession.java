@@ -1,0 +1,27 @@
+package ru.yandex.practicum.sleeptracker.analysis;
+
+import ru.yandex.practicum.sleeptracker.model.SleepingSession;
+import ru.yandex.practicum.sleeptracker.model.AnalysisResult;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.function.Function;
+
+public class AverageDurationSession implements Function<List<SleepingSession>, AnalysisResult<Double>> {
+
+    @Override
+    public AnalysisResult<Double> apply(List<SleepingSession> sessions) {
+        if (sessions == null) {
+            return new AnalysisResult<>(AnalysisConstants.AVG_DURATION_TITLE, 0.0);
+        }
+
+        double averageDuration = sessions.stream()
+                .mapToLong(session ->
+                        Duration.between(session.getStart(), session.getEnd()).toMinutes()
+                )
+                .average()
+                .orElse(0.0);
+
+        return new AnalysisResult<>(AnalysisConstants.AVG_DURATION_TITLE, averageDuration);
+    }
+}

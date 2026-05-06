@@ -1,2 +1,2 @@
 # java-sleep-tracker
-Repository for homework project.
+Привет, Сергей! Отправляю задание на проверку)
